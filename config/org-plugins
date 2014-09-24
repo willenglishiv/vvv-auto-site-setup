@@ -2,10 +2,12 @@
 # Each line should contain a plugin slug for wp-cli
 #
 # For example, uncomment the lines below to get lots of debug bar goodies in your project.
-# debug-bar
-# debug-bar-console
-# debug-bar-cron
-# debug-bar-extender
-# jetpack
-# wordpress-importer
+
 # woocommerce
+debug-bar
+debug-bar-console
+debug-bar-cron
+debug-bar-extender
+jetpack
+wordpress-importer
+wordpress-seo

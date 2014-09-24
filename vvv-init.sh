@@ -19,6 +19,7 @@ if [ ! -d htdocs ]
 	if [ ! $(wp core is-installed) ]
 		then
 		wp core install --url="$domain" --title="$site_name" --admin_user="$admin_user" --admin_password="$admin_pass" --admin_email="$admin_email"
+		wp post list --post_type=page,post --format=ids | xargs wp post delete
 	fi
 	#Install all WordPress.org plugins in the org_plugins file using CLI
 	echo "Installing WordPress.org Plugins"
