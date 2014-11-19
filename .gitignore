@@ -1,0 +1,6 @@
+# don't commit project files
+htdocs/*
+src/themes/*
+src/plugins/*
+!src/themes/.gitkeep
+!src/plugins/.gitkeep

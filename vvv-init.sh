@@ -19,7 +19,9 @@ if [ ! -d htdocs ]
 	if [ ! $(wp core is-installed) ]
 		then
 		wp core install --url="$domain" --title="$site_name" --admin_user="$admin_user" --admin_password="$admin_pass" --admin_email="$admin_email"
-		wp post list --post_type=page,post --format=ids | xargs wp post delete
+		# delete starting posts
+		wp post delete 1,2 --force
+
 	fi
 	#Install all WordPress.org plugins in the org_plugins file using CLI
 	echo "Installing WordPress.org Plugins"
@@ -35,6 +37,9 @@ if [ ! -d htdocs ]
 	fi
 	# Move back to root to finish up shell commands.
 	cd ..
+
+	# Install latest version of roots and soil, activate it
+	#git clone https://github.com/roots/roots.git 
 fi
 # Symlink working directories
 # First clear out any links already present
@@ -46,9 +51,6 @@ find src/plugins/ -maxdepth 1 -mindepth 1 -exec ln -s $PWD/{} $PWD/htdocs/wp-con
 # Themes
 echo "Linking working directory themes"
 find src/themes/ -maxdepth 1 -mindepth 1 -exec ln -s $PWD/{} $PWD/htdocs/wp-content/themes/ \;
-# Dropins
-echo "Linking any available drop-ins"
-find src/dropins/ -maxdepth 1 -mindepth 1 -exec ln -s $PWD/{} $PWD/htdocs/wp-content/ \;
 
 # The Vagrant site setup script will restart Nginx for us
 echo "$site_name is now set up!";

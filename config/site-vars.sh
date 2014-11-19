@@ -2,6 +2,7 @@
 
 # This specifies the main site name in provisioning.
 site_name='Example Site'
+theme_folder='Example'
 
 # This sets up the name of the DB and the user and password for the DB.
 database='example_db'
