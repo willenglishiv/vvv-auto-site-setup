@@ -1,6 +1,1 @@
-[submodule "src/themes/roots"]
-	path = src/themes/roots
-	url = https://github.com/roots/roots.git
-[submodule "src/plugins/soil"]
-	path = src/plugins/soil
-	url = https://github.com/roots/soil.git
+
