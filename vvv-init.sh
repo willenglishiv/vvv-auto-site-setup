@@ -8,38 +8,50 @@ mysql -u root --password=root -e "CREATE DATABASE IF NOT EXISTS $database"
 mysql -u root --password=root -e "GRANT ALL PRIVILEGES ON $database.* TO $dbuser@localhost IDENTIFIED BY '$dbpass';"
 
 # Install WordPress if it's not already present.
-if [ ! -d htdocs ]
+if [[ ! -d htdocs ]]
 	then
 	echo "Installing WordPress using WP-CLI"
 	mkdir htdocs
 	# Move into htdocs to run 'wp' commands.
-	cd htdocs
+	# cd htdocs
 	wp core download
-	wp core config --dbname="$database" --dbuser="$dbuser" --dbpass="$dbpass" --extra-php < ../config/wp-constants
+	wp core config
 	if [ ! $(wp core is-installed) ]
 		then
-		wp core install --url="$domain" --title="$site_name" --admin_user="$admin_user" --admin_password="$admin_pass" --admin_email="$admin_email"
+		wp core install
 		# delete starting posts
 		wp post delete 1,2 --force
-
 	fi
 	#Install all WordPress.org plugins in the org_plugins file using CLI
 	echo "Installing WordPress.org Plugins"
-	if [ -f ../config/org-plugins ]
+	if [[ -f ../config/org-plugins ]]
 	then
 		while IFS='' read -r line || [ -n "$line" ]
 		do
-			if [ "#" != ${line:0:1} ]
+			if [[ "#" != ${line:0:1} ]]
 			then
-				wp plugin install $line
+				# Install Plugins & Activate them (why not?)
+				wp plugin install $line --activate
 			fi
 		done < ../config/org-plugins
 	fi
 	# Move back to root to finish up shell commands.
-	cd ..
+	# cd ..
 
 	# Install latest version of roots and soil, activate it
-	#git clone https://github.com/roots/roots.git 
+	git clone https://github.com/roots/roots.git src/themes/roots
+	cd src/themes/roots
+	npm install
+	grunt dev
+	wp theme activate roots
+
+	# Take care of some Roots activation stuff command line
+	wp rewrite structure '%postname%'
+	wp post create --porcelain | 
+
+	git clone https://github.com/roots/soil.git src/plugins/soil
+
+	# Activate 
 fi
 # Symlink working directories
 # First clear out any links already present
