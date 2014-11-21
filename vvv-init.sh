@@ -10,6 +10,9 @@ mysql -u root --password=root -e "GRANT ALL PRIVILEGES ON $database.* TO $dbuser
 # Install WordPress if it's not already present.
 if [[ ! -d htdocs ]]
 	then
+	# Behind Firewall/Proxy
+	git config url.https://github.com/.insteadOf git://github.com/
+
 	echo "Installing WordPress using WP-CLI"
 	mkdir htdocs
 
@@ -40,8 +43,14 @@ if [[ ! -d htdocs ]]
 
 	# Install latest version of roots and soil, activate it
 	echo "Installing Roots Theme"
-	git clone https://github.com/roots/roots.git src/themes/roots
+	# git clone https://github.com/roots/roots.git src/themes/roots
 	# wp theme activate roots
+	git clone https://github.com/roots/roots.git htdocs/wp-content/themes/roots
+	cd htdocs/wp-content/themes/roots
+	npm install &>/dev/null
+	cd ../../../../
+	wp theme activate roots
+
 
 	echo "Installing Soil Plugin"
 	git clone https://github.com/roots/soil.git htdocs/wp-content/plugins/soil
