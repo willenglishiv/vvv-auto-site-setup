@@ -30,6 +30,7 @@ if [[ ! -d htdocs ]]
 			if [[ "#" != ${line:0:1} ]]
 			then
 				# Install Plugins & Activate them (why not?)
+				echo "Installing $line plugin"
 				wp plugin install $line --activate
 			fi
 		done < config/org-plugins
@@ -38,18 +39,11 @@ if [[ ! -d htdocs ]]
 	# cd ..
 
 	# Install latest version of roots and soil, activate it
-	git clone https://github.com/roots/roots.git htdocs/wp-content/themes/roots
-	cd htdocs/wp-content/themes/roots
-	npm install
-	grunt dev
-	cd ../../../..
-	wp theme activate roots
+	echo "Installing Roots Theme"
+	git clone https://github.com/roots/roots.git src/themes/roots
+	# wp theme activate roots
 
-	# Take care of some Roots activation stuff command line
-	wp rewrite structure '/%postname%/'
-	wp option update show_on_front page
-	wp post create --porcelain | xargs wp option update page_on_front
-
+	echo "Installing Soil Plugin"
 	git clone https://github.com/roots/soil.git htdocs/wp-content/plugins/soil
 	wp plugin activate soil
 fi
