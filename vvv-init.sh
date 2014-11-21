@@ -43,14 +43,17 @@ if [[ ! -d htdocs ]]
 
 	# Install latest version of roots and soil, activate it
 	echo "Installing Roots Theme"
-	# git clone https://github.com/roots/roots.git src/themes/roots
-	# wp theme activate roots
 	git clone https://github.com/roots/roots.git htdocs/wp-content/themes/roots
 	cd htdocs/wp-content/themes/roots
+	echo "Initializing Theme"
 	npm install &>/dev/null
 	cd ../../../../
 	wp theme activate roots
 
+	# Take care of some Roots activation stuff command line
+	wp rewrite structure '/%postname%/'
+	wp option update show_on_front page
+	wp post create --porcelain | xargs wp option update page_on_front
 
 	echo "Installing Soil Plugin"
 	git clone https://github.com/roots/soil.git htdocs/wp-content/plugins/soil
