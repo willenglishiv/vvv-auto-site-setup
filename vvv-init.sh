@@ -23,7 +23,7 @@ if [[ ! -d htdocs ]]
 
 	#Install all WordPress.org plugins in the org_plugins file using CLI
 	echo "Installing WordPress.org Plugins"
-	if [[ -f ../config/org-plugins ]]
+	if [[ -f config/org-plugins ]]
 	then
 		while IFS='' read -r line || [ -n "$line" ]
 		do
@@ -32,17 +32,17 @@ if [[ ! -d htdocs ]]
 				# Install Plugins & Activate them (why not?)
 				wp plugin install $line --activate
 			fi
-		done < ../config/org-plugins
+		done < config/org-plugins
 	fi
 	# Move back to root to finish up shell commands.
 	# cd ..
 
 	# Install latest version of roots and soil, activate it
 	git clone https://github.com/roots/roots.git htdocs/wp-content/themes/roots
-	cd src/themes/roots
+	cd htdocs/wp-content/themes/roots
 	npm install
 	grunt dev
-	cd ../../..
+	cd ../../../..
 	wp theme activate roots
 
 	# Take care of some Roots activation stuff command line
