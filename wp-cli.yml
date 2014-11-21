@@ -12,7 +12,7 @@ core config:
 		define( 'SCRIPT_DEBUG', true );
 		define( 'SAVEQUERIES', true );
 		define( 'WP_ENV' , 'development');
-		define( 'JETPACK_DEV_DEBUG', true); 
+		define( 'JETPACK_DEV_DEBUG', true);
 core install:
 	url: {http://example.dev}
 	title: {Example Site}

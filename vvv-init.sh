@@ -12,16 +12,15 @@ if [[ ! -d htdocs ]]
 	then
 	echo "Installing WordPress using WP-CLI"
 	mkdir htdocs
+
 	# Move into htdocs to run 'wp' commands.
-	# cd htdocs
 	wp core download
 	wp core config
-	if [ ! $(wp core is-installed) ]
-		then
-		wp core install
-		# delete starting posts
-		wp post delete 1,2 --force
-	fi
+	wp core install
+
+	# delete starting posts
+	wp post delete 1,2 --force
+
 	#Install all WordPress.org plugins in the org_plugins file using CLI
 	echo "Installing WordPress.org Plugins"
 	if [[ -f ../config/org-plugins ]]
@@ -39,19 +38,20 @@ if [[ ! -d htdocs ]]
 	# cd ..
 
 	# Install latest version of roots and soil, activate it
-	git clone https://github.com/roots/roots.git src/themes/roots
+	git clone https://github.com/roots/roots.git htdocs/wp-content/themes/roots
 	cd src/themes/roots
 	npm install
 	grunt dev
+	cd ../../..
 	wp theme activate roots
 
 	# Take care of some Roots activation stuff command line
-	wp rewrite structure '%postname%'
-	wp post create --porcelain | 
+	wp rewrite structure '/%postname%/'
+	wp option update show_on_front page
+	wp post create --porcelain | xargs wp option update page_on_front
 
-	git clone https://github.com/roots/soil.git src/plugins/soil
-
-	# Activate 
+	git clone https://github.com/roots/soil.git htdocs/wp-content/plugins/soil
+	wp plugin activate soil
 fi
 # Symlink working directories
 # First clear out any links already present
