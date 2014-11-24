@@ -2,7 +2,7 @@
 # Each line should contain a plugin slug for wp-cli
 #
 # For example, uncomment the lines below to get lots of debug bar goodies in your project.
-
+#
 # woocommerce
 debug-bar
 debug-bar-console
