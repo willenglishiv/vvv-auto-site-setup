@@ -13,3 +13,21 @@ domain='http://example.dev'
 admin_user='admin'
 admin_pass='password'
 admin_email='jqpublic@gmail.com'
+
+# salt key
+salt_key='example'
+
+wordpress_plugins=(
+	# List out any plugins in the WordPress.org repository and they will be installed.
+	# Each line should contain a plugin slug for wp-cli
+
+	debug-bar
+	debug-bar-console
+	debug-bar-cron
+	debug-bar-extender
+	jetpack
+	wordpress-importer
+	developer
+	# wordpress-seo
+	# woocommerce
+)

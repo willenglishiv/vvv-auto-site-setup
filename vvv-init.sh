@@ -11,49 +11,39 @@ mysql -u root --password=root -e "GRANT ALL PRIVILEGES ON $database.* TO $dbuser
 if [[ ! -d htdocs ]]
 	then
 	# Behind Firewall/Proxy
-	git config url.https://github.com/.insteadOf git://github.com/
+	# git config url.https://github.com/.insteadOf git://github.com/
 
 	echo "Installing WordPress using WP-CLI"
 	mkdir htdocs
 
 	# Move into htdocs to run 'wp' commands.
 	wp core download
-	wp core config
-	wp core install
+	wp core config --dbname="$database" --dbuser="$dbuser" --dbpass="$dbpass" --extra-php <<PHP
+/* Cache Salt */
+define( 'WP_CACHE_KEY_SALT', '$salt_key' );
+
+/* Debug */
+define( 'WP_DEBUG', true );
+define( 'SCRIPT_DEBUG', true );
+define( 'SAVEQUERIES', true );
+define( 'WP_ENV' , 'development');
+define( 'JETPACK_DEV_DEBUG', true);
+PHP
+	wp core install --url="$domain" --title="$site_name" --admin_user="$admin_user" --admin_password="$admin_pass" --admin_email="$admin_email"
 
 	# delete starting posts
 	wp post delete 1,2 --force
 
 	#Install all WordPress.org plugins in the org_plugins file using CLI
 	echo "Installing WordPress.org Plugins"
-	if [[ -f config/org-plugins ]]
-	then
-		while IFS='' read -r line || [ -n "$line" ]
-		do
-			if [[ "#" != ${line:0:1} ]]
-			then
-				# Install Plugins & Activate them (why not?)
-				echo "Installing $line plugin"
-				wp plugin install $line --activate
-			fi
-		done < config/org-plugins
-	fi
-	# Move back to root to finish up shell commands.
-	# cd ..
+	for pkg in "${wordpress_plugins[@]}"; do
+		echo "Installing $pkg plugin"
+		wp plugin install $pkg --activate
+	done
 
 	# Install latest version of roots and soil, activate it
 	echo "Installing Roots Theme"
 	git clone https://github.com/roots/roots.git htdocs/wp-content/themes/roots
-	cd htdocs/wp-content/themes/roots
-	echo "Initializing Theme"
-	npm install &>/dev/null
-	cd ../../../../
-	wp theme activate roots
-
-	# Take care of some Roots activation stuff command line
-	wp rewrite structure '/%postname%/'
-	wp option update show_on_front page
-	wp post create --porcelain | xargs wp option update page_on_front
 
 	echo "Installing Soil Plugin"
 	git clone https://github.com/roots/soil.git htdocs/wp-content/plugins/soil

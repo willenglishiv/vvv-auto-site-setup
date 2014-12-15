@@ -10,5 +10,5 @@ debug-bar-cron
 debug-bar-extender
 jetpack
 wordpress-importer
-wordpress-seo
+# wordpress-seo
 developer
