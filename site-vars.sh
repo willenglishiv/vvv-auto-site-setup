@@ -10,9 +10,9 @@ dbpass='wp'
 
 # The site details for this site
 domain='http://example.dev'
-admin_user='admin'
+admin_user='zerocool'
 admin_pass='password'
-admin_email='jqpublic@gmail.com'
+admin_email='anon@anon.net'
 
 # salt key
 salt_key='example'

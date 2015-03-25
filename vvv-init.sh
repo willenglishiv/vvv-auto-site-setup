@@ -31,9 +31,6 @@ define( 'JETPACK_DEV_DEBUG', true);
 PHP
 	wp core install --url="$domain" --title="$site_name" --admin_user="$admin_user" --admin_password="$admin_pass" --admin_email="$admin_email"
 
-	# delete starting posts
-	wp post delete 1,2 --force
-
 	#Install all WordPress.org plugins in the org_plugins file using CLI
 	echo "Installing WordPress.org Plugins"
 	for pkg in "${wordpress_plugins[@]}"; do
@@ -42,23 +39,28 @@ PHP
 	done
 
 	# Install latest version of roots and soil, activate it
-	echo "Installing Roots Theme"
-	git clone https://github.com/roots/roots.git htdocs/wp-content/themes/roots
+	echo "Installing Sage Theme"
+	git clone https://github.com/roots/sage.git src/themes/sage
 
 	echo "Installing Soil Plugin"
-	git clone https://github.com/roots/soil.git htdocs/wp-content/plugins/soil
-	wp plugin activate soil
+	git clone https://github.com/roots/soil.git src/plugins/soil
+
 fi
 # Symlink working directories
 # First clear out any links already present
 find htdocs/wp-content/ -maxdepth 2 -type l -exec rm -f {} \;
 # Next attach symlinks for eacy of our types.
+
 # Plugins
 echo "Linking working directory pluins"
-find src/plugins/ -maxdepth 1 -mindepth 1 -exec ln -s $PWD/{} $PWD/htdocs/wp-content/plugins/ \;
+find src/plugins/ -maxdepth 1 -mindepth 1 -type d -exec ln -s $PWD/{} $PWD/htdocs/wp-content/plugins/ \;
+
 # Themes
 echo "Linking working directory themes"
-find src/themes/ -maxdepth 1 -mindepth 1 -exec ln -s $PWD/{} $PWD/htdocs/wp-content/themes/ \;
+find src/themes/ -maxdepth 1 -mindepth 1 -type d -exec ln -s $PWD/{} $PWD/htdocs/wp-content/themes/ \;
+
+# Finally activate soil
+wp plugin activate soil
 
 # The Vagrant site setup script will restart Nginx for us
 echo "$site_name is now set up!";
