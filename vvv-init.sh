@@ -1,5 +1,5 @@
 # Init script for VVV Auto Site Setup
-source config/site-vars.sh
+source site-vars.sh
 echo "Commencing $site_name Site Setup"
 
 # Make a database, if we don't already have one
