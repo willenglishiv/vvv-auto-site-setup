@@ -34,7 +34,6 @@ PHP
 	#Install all WordPress.org plugins in the org_plugins file using CLI
 	echo "Installing WordPress.org Plugins"
 	for pkg in "${wordpress_plugins[@]}"; do
-		echo "Installing $pkg plugin"
 		wp plugin install $pkg --activate
 	done
 
@@ -52,7 +51,7 @@ find htdocs/wp-content/ -maxdepth 2 -type l -exec rm -f {} \;
 # Next attach symlinks for eacy of our types.
 
 # Plugins
-echo "Linking working directory pluins"
+echo "Linking working directory plugins"
 find src/plugins/ -maxdepth 1 -mindepth 1 -type d -exec ln -s $PWD/{} $PWD/htdocs/wp-content/plugins/ \;
 
 # Themes
