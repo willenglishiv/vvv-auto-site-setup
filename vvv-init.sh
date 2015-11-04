@@ -17,8 +17,8 @@ if [[ ! -d htdocs ]]
 	mkdir htdocs
 
 	# Move into htdocs to run 'wp' commands.
-	wp core download
-	wp core config --dbname="$database" --dbuser="$dbuser" --dbpass="$dbpass" --extra-php <<PHP
+	wp core download --allow-root
+	wp core config --dbname="$database" --dbuser="$dbuser" --dbpass="$dbpass" --allow-root --extra-php <<PHP
 /* Cache Salt */
 define( 'WP_CACHE_KEY_SALT', '$salt_key' );
 
@@ -29,12 +29,12 @@ define( 'SAVEQUERIES', true );
 define( 'WP_ENV' , 'development');
 define( 'JETPACK_DEV_DEBUG', true);
 PHP
-	wp core install --url="$domain" --title="$site_name" --admin_user="$admin_user" --admin_password="$admin_pass" --admin_email="$admin_email"
+	wp core install --url="$domain" --title="$site_name" --admin_user="$admin_user" --admin_password="$admin_pass" --admin_email="$admin_email" --allow-root
 
 	#Install all WordPress.org plugins in the org_plugins file using CLI
 	echo "Installing WordPress.org Plugins"
 	for pkg in "${wordpress_plugins[@]}"; do
-		wp plugin install $pkg --activate
+		wp plugin install $pkg --activate --allow-root
 	done
 
 	# Install latest version of roots and soil, activate it
@@ -59,7 +59,7 @@ echo "Linking working directory themes"
 find src/themes/ -maxdepth 1 -mindepth 1 -type d -exec ln -s $PWD/{} $PWD/htdocs/wp-content/themes/ \;
 
 # Finally activate soil
-wp plugin activate soil
+wp plugin activate soil --allow-root
 
 # The Vagrant site setup script will restart Nginx for us
 echo "$site_name is now set up!";
