@@ -16,6 +16,7 @@ admin_email='anon@anon.net'
 
 # salt key
 salt_key='example'
+prefix='wp_'
 
 wordpress_plugins=(
 	# List out any plugins in the WordPress.org repository and they will be installed.

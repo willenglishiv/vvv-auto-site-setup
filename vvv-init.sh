@@ -8,26 +8,29 @@ mysql -u root --password=root -e "CREATE DATABASE IF NOT EXISTS $database"
 mysql -u root --password=root -e "GRANT ALL PRIVILEGES ON $database.* TO $dbuser@localhost IDENTIFIED BY '$dbpass';"
 
 # Install WordPress if it's not already present.
-if [[ ! -d htdocs ]]
+if [[ ! -d "htdocs/wp-admin" ]]
 	then
-	# Behind Firewall/Proxy
-	# git config url.https://github.com/.insteadOf git://github.com/
 
-	echo "Installing WordPress using WP-CLI"
-	mkdir htdocs
+	echo "Installing WordPress"
+	if [ ! -d "./htdocs" ]; then
+		mkdir ./htdocs
+	fi
+	cd ./htdocs
 
 	# Move into htdocs to run 'wp' commands.
-	wp core download --allow-root
-	wp core config --dbname="$database" --dbuser="$dbuser" --dbpass="$dbpass" --allow-root --extra-php <<PHP
+	wp core download --locale=en_US --allow-root
+	wp core config --dbname="$database" --dbuser="$dbuser" --dbpass="$dbpass" --dbhost="localhost" --dbprefix="$prefix" --locale=en_US --allow-root --extra-php <<PHP
 /* Cache Salt */
 define( 'WP_CACHE_KEY_SALT', '$salt_key' );
 
 /* Debug */
-define( 'WP_DEBUG', true );
-define( 'SCRIPT_DEBUG', true );
-define( 'SAVEQUERIES', true );
-define( 'WP_ENV' , 'development');
-define( 'JETPACK_DEV_DEBUG', true);
+define( 'WP_DEBUG' , true );
+define( 'WP_DEBUG_DISPLAY' , false );
+define( 'WP_DEBUG_LOG' , true );
+define( 'SCRIPT_DEBUG' , true );
+define( 'SAVEQUERIES' , true );
+define( 'WP_ENV' , 'development' );
+define( 'JETPACK_DEV_DEBUG' , true );
 PHP
 	wp core install --url="$domain" --title="$site_name" --admin_user="$admin_user" --admin_password="$admin_pass" --admin_email="$admin_email" --allow-root
 
@@ -43,6 +46,8 @@ PHP
 
 	echo "Installing Soil Plugin"
 	git clone https://github.com/roots/soil.git src/plugins/soil
+	wp plugin activate soil --allow-root
+	cd -
 
 fi
 # Symlink working directories
@@ -58,8 +63,6 @@ find src/plugins/ -maxdepth 1 -mindepth 1 -type d -exec ln -s $PWD/{} $PWD/htdoc
 echo "Linking working directory themes"
 find src/themes/ -maxdepth 1 -mindepth 1 -type d -exec ln -s $PWD/{} $PWD/htdocs/wp-content/themes/ \;
 
-# Finally activate soil
-wp plugin activate soil --allow-root
 
 # The Vagrant site setup script will restart Nginx for us
 echo "$site_name is now set up!";
